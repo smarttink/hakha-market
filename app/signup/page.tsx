@@ -1,51 +1,67 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Eye, EyeOff, UserPlus } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Separator } from "@/components/ui/separator"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Define the form schema with Zod
 const signupSchema = z
   .object({
-    firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
-    lastName: z.string().min(2, { message: "Last name must be at least 2 characters" }),
-    email: z.string().email({ message: "Please enter a valid email address" }),
+    firstName: z.string().min(2, { message: "نام باید حداقل ۲ حرف باشد" }),
+    lastName: z
+      .string()
+      .min(2, { message: "نام خانوادگی باید حداقل ۲ حرف باشد" }),
+    email: z.string().email({ message: "لطفا یک ایمیل معتبر وارد کنید" }),
     password: z
       .string()
-      .min(8, { message: "Password must be at least 8 characters" })
-      .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
-      .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
-      .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+      .min(8, { message: "رمز عبور باید حداقل ۸ کاراکتر باشد" })
+      .regex(/[A-Z]/, { message: "رمز عبور باید حداقل یک حرف بزرگ داشته باشد" })
+      .regex(/[a-z]/, { message: "رمز عبور باید حداقل یک حرف کوچک داشته باشد" })
+      .regex(/[0-9]/, { message: "رمز عبور باید حداقل یک عدد داشته باشد" }),
     confirmPassword: z.string(),
     termsAccepted: z.literal(true, {
-      errorMap: () => ({ message: "You must accept the terms and conditions" }),
+      errorMap: () => ({ message: "شما باید با شرایط و ضوابط موافقت کنید" }),
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: "رمزهای عبور مطابقت ندارند",
     path: ["confirmPassword"],
-  })
+  });
 
-type SignupFormValues = z.infer<typeof signupSchema>
+type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Initialize the form
   const form = useForm<SignupFormValues>({
@@ -58,40 +74,44 @@ export default function SignupPage() {
       confirmPassword: "",
       termsAccepted: false,
     },
-  })
+  });
 
   // Form submission handler
   const onSubmit = async (data: SignupFormValues) => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
       // In a real app, you would call your registration API here
-      console.log("Signup data:", data)
+      console.log("Signup data:", data);
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // For demo purposes, let's simulate a successful registration
       // In a real app, you would store the token, user info, etc.
-      localStorage.setItem("isAuthenticated", "true")
+      localStorage.setItem("isAuthenticated", "true");
 
       // Redirect to home page or dashboard
-      router.push("/")
+      router.push("/");
     } catch (err) {
-      console.error("Signup error:", err)
-      setError("An error occurred during registration. Please try again.")
+      console.error("Signup error:", err);
+      setError("An error occurred during registration. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container flex items-center justify-center py-10 md:py-16">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-          <CardDescription>Enter your information to create an account</CardDescription>
+          <CardTitle className="text-2xl font-bold">
+            ایجاد حساب کاربری
+          </CardTitle>
+          <CardDescription>
+            اطلاعات خود را برای ایجاد حساب کاربری وارد کنید
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -108,9 +128,13 @@ export default function SignupPage() {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>نام</FormLabel>
                       <FormControl>
-                        <Input placeholder="John" disabled={isLoading} {...field} />
+                        <Input
+                          placeholder="نام"
+                          disabled={isLoading}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,9 +146,13 @@ export default function SignupPage() {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>نام خانوادگی</FormLabel>
                       <FormControl>
-                        <Input placeholder="Doe" disabled={isLoading} {...field} />
+                        <Input
+                          placeholder="نام خانوادگی"
+                          disabled={isLoading}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -137,7 +165,7 @@ export default function SignupPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>ایمیل</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="name@example.com"
@@ -157,7 +185,7 @@ export default function SignupPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>رمز عبور</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -178,7 +206,11 @@ export default function SignupPage() {
                           ) : (
                             <Eye className="h-4 w-4 text-muted-foreground" />
                           )}
-                          <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                          <span className="sr-only">
+                            {showPassword
+                              ? "مخفی کردن رمز عبور"
+                              : "نمایش رمز عبور"}
+                          </span>
                         </Button>
                       </div>
                     </FormControl>
@@ -192,7 +224,7 @@ export default function SignupPage() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>تکرار رمز عبور</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -206,14 +238,20 @@ export default function SignupPage() {
                           variant="ghost"
                           size="icon"
                           className="absolute right-0 top-0 h-full px-3"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                         >
                           {showConfirmPassword ? (
                             <EyeOff className="h-4 w-4 text-muted-foreground" />
                           ) : (
                             <Eye className="h-4 w-4 text-muted-foreground" />
                           )}
-                          <span className="sr-only">{showConfirmPassword ? "Hide password" : "Show password"}</span>
+                          <span className="sr-only">
+                            {showConfirmPassword
+                              ? "مخفی کردن رمز عبور"
+                              : "نمایش رمز عبور"}
+                          </span>
                         </Button>
                       </div>
                     </FormControl>
@@ -228,18 +266,29 @@ export default function SignupPage() {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={isLoading} />
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isLoading}
+                      />
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel>
-                        I agree to the{" "}
-                        <Link href="/terms" className="text-primary hover:underline">
-                          terms of service
+                        من با{" "}
+                        <Link
+                          href="/terms"
+                          className="text-primary hover:underline"
+                        >
+                          شرایط استفاده
                         </Link>{" "}
-                        and{" "}
-                        <Link href="/privacy" className="text-primary hover:underline">
-                          privacy policy
-                        </Link>
+                        و{" "}
+                        <Link
+                          href="/privacy"
+                          className="text-primary hover:underline"
+                        >
+                          سیاست حفظ حریم خصوصی
+                        </Link>{" "}
+                        موافقم
                       </FormLabel>
                       <FormMessage />
                     </div>
@@ -270,12 +319,12 @@ export default function SignupPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Creating account...
+                    در حال ایجاد حساب...
                   </span>
                 ) : (
                   <span className="flex items-center justify-center">
                     <UserPlus className="mr-2 h-4 w-4" />
-                    Create account
+                    ایجاد حساب
                   </span>
                 )}
               </Button>
@@ -288,29 +337,34 @@ export default function SignupPage() {
                 <Separator className="w-full" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-background px-2 text-muted-foreground">
+                  یا ادامه با
+                </span>
               </div>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Button variant="outline" disabled={isLoading}>
-                Google
+                گوگل
               </Button>
               <Button variant="outline" disabled={isLoading}>
-                Facebook
+                فیسبوک
               </Button>
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary hover:underline">
-              Sign in
+            قبلاً حساب کاربری دارید؟{" "}
+            <Link
+              href="/login"
+              className="font-medium text-primary hover:underline"
+            >
+              ورود
             </Link>
           </p>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
